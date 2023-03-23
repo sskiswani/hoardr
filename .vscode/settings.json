@@ -1,0 +1,14 @@
+{
+  "[typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.eslint.fixAll": true,
+      "source.fixAll": true,
+      "source.organizeImports": true
+    },
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "files.exclude": {
+    ".next": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
