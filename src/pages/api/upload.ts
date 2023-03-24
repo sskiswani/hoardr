@@ -1,6 +1,7 @@
 import type { Prisma } from '@prisma/client';
 import type { Fields, File, Files } from 'formidable';
 import formidable from 'formidable';
+import { existsSync, mkdirSync } from 'fs';
 import type { NextApiRequest, NextApiResponse, PageConfig } from 'next';
 import prisma from '~/lib/prisma';
 import { uploadDir } from '~/util/env';
@@ -12,7 +13,11 @@ interface ParsedFile {
 }
 
 function parseFile(req: NextApiRequest) {
-  console.log('uploadDir', uploadDir);
+  if (!existsSync(uploadDir)) {
+    mkdirSync(uploadDir);
+    logger.info('created', uploadDir);
+  }
+
   return new Promise<ParsedFile>((resolve, reject) => {
     const form = formidable({
       keepExtensions: true,
@@ -30,6 +35,7 @@ function parseFile(req: NextApiRequest) {
 }
 
 function createInput(file: File): Prisma.UploadCreateInput {
+  // TODO: fixup whats being stored
   return {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     name: file.originalFilename!,
@@ -46,8 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const { files } = await parseFile(req);
 
-    const uploadData = Object.entries(files).flatMap<Prisma.UploadCreateInput>(([key, file]) => {
-      logger.info('got key', { key });
+    const uploadData = Object.values(files).flatMap<Prisma.UploadCreateInput>(file => {
       return Array.isArray(file) ? file.map(createInput) : createInput(file);
     });
 

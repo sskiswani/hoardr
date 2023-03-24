@@ -1,11 +1,13 @@
 import { readFile } from 'fs/promises';
+import mime from 'mime';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import path from 'path';
 import prisma from '~/lib/prisma';
 import { getUploadPath } from '~/util/env';
 
+type ApiError = { message: string; status: number };
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const imageId = req.query.imageId as string;
+  const imageId = req.query.id as string;
 
   try {
     const upload = await prisma.upload.findUniqueOrThrow({
@@ -13,12 +15,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     const abspath = getUploadPath(upload.path);
-    const filetype = path.extname(abspath).slice(1);
     const result = await readFile(abspath);
-    return res.setHeader('Content-Type', `image/${filetype}`).status(200).send(result);
-  } catch (error: any) {
-    const { message = 'An unknown error occured', status = 500 } = error;
-    console.error({ message, status });
-    return res.status(status as number).end(message);
+    const contentType = mime.getType(abspath) ?? `image/${path.extname(abspath).slice(1)}`;
+    return res.setHeader('Content-Type', contentType).status(200).send(result);
+  } catch (error: unknown) {
+    console.error(error);
+    const { message = 'An unknown error occured', status = 500 } = error as ApiError;
+    return res.status(status).end(message);
   }
 }
