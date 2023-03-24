@@ -13,7 +13,9 @@ datasource db {
 model Upload {
   id       String   @id @default(cuid())
   uploaded DateTime @default(now())
+  mime     String?
   name     String
+  // TODO: shouldnt need this
   path     String   @unique
 
   @@index([name])

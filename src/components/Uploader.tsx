@@ -1,7 +1,7 @@
-import { Group } from '@mantine/core';
+import { Box, Group, Text } from '@mantine/core';
 import type { FileWithPath } from '@mantine/dropzone';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
-import { IconFileDislike, IconPhoto, IconUpload } from '@tabler/icons-react';
+import { IconPhotoPlus, IconPhotoUp, IconPhotoX } from '@tabler/icons-react';
 import { useSWRConfig } from 'swr';
 
 interface UploaderProps {
@@ -10,16 +10,23 @@ interface UploaderProps {
 
 function DropzoneContent() {
   return (
-    <Group sx={{ pointerEvents: 'none' }}>
+    <Group position="center" spacing="xl" sx={{ pointerEvents: 'none' }}>
       <Dropzone.Accept>
-        <IconUpload />
+        <IconPhotoPlus size={32} />
       </Dropzone.Accept>
       <Dropzone.Reject>
-        <IconFileDislike />
+        <IconPhotoX size={32} />
       </Dropzone.Reject>
       <Dropzone.Idle>
-        <IconPhoto />
+        <IconPhotoUp size={32} />
       </Dropzone.Idle>
+      <Box>
+        <Text size="sm" color="dimmed" inline>
+          <Dropzone.Accept>Begin upload</Dropzone.Accept>
+          <Dropzone.Reject>Unrecognized file type.</Dropzone.Reject>
+          <Dropzone.Idle>Drag images here or click to select them.</Dropzone.Idle>
+        </Text>
+      </Box>
     </Group>
   );
 }
@@ -27,7 +34,7 @@ function DropzoneContent() {
 async function onUpload(files: FileWithPath[]) {
   const formData = new FormData();
   files.forEach(file => formData.append('file', file));
-  const response = await fetch('/api/upload', {
+  const response = await fetch('/api/file', {
     method: 'POST',
     body: formData
   });
@@ -44,10 +51,17 @@ export function Uploader(_props: UploaderProps) {
       accept={IMAGE_MIME_TYPE}
       onDrop={files => {
         console.log('accepted files', files);
-        void onUpload(files).then(() => mutate('/api/uploads', undefined, { revalidate: true }));
+        void onUpload(files).then(() =>
+          mutate(
+            key => {
+              return typeof key === 'string' && key.startsWith('/api/file');
+            },
+            undefined,
+            { revalidate: true }
+          )
+        );
       }}
-      onReject={files => console.log('rejected files', files)}
-      radius="md">
+      onReject={files => console.log('rejected files', files)}>
       <DropzoneContent />
     </Dropzone>
   );
@@ -58,8 +72,7 @@ export function UploaderFullscreen() {
     <Dropzone.FullScreen
       accept={IMAGE_MIME_TYPE}
       onDrop={files => console.log('accepted files', files)}
-      onReject={files => console.log('rejected files', files)}
-      radius="md">
+      onReject={files => console.log('rejected files', files)}>
       <DropzoneContent />
     </Dropzone.FullScreen>
   );

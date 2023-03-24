@@ -3,8 +3,9 @@ import type { Fields, File, Files } from 'formidable';
 import formidable from 'formidable';
 import { existsSync, mkdirSync } from 'fs';
 import type { NextApiRequest, NextApiResponse, PageConfig } from 'next';
+import { extname, relative } from 'path';
 import prisma from '~/lib/prisma';
-import { uploadDir } from '~/util/env';
+import { clearUploads, uploadDir } from '~/util/env';
 import logger from '~/util/logger';
 
 interface ParsedFile {
@@ -21,6 +22,7 @@ function parseFile(req: NextApiRequest) {
   return new Promise<ParsedFile>((resolve, reject) => {
     const form = formidable({
       keepExtensions: true,
+      multiples: true,
       uploadDir
     });
 
@@ -35,20 +37,18 @@ function parseFile(req: NextApiRequest) {
 }
 
 function createInput(file: File): Prisma.UploadCreateInput {
-  // TODO: fixup whats being stored
+  const filename = file.originalFilename ?? file.newFilename;
+  const ext = extname(filename);
+
   return {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    name: file.originalFilename!,
-    id: file.newFilename.split('.').shift(),
-    path: file.filepath
+    name: filename.replaceAll(ext, ''),
+    id: file.newFilename.replaceAll(ext, ''),
+    mime: file.mimetype,
+    path: relative(uploadDir, file.filepath)
   };
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method Not Allowed' });
-  }
-
+async function POST(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { files } = await parseFile(req);
 
@@ -70,6 +70,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     res.status(200).json(uploadResult);
+  } catch (e) {
+    res.status(500).json({ error: e });
+  }
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    if (req.method === 'POST') {
+      await POST(req, res);
+    } else if (req.method === 'GET') {
+      const uploads = await prisma.upload.findMany();
+      res.status(200).json(uploads);
+    } else if (req.method === 'DELETE') {
+      const result = await prisma.upload.deleteMany();
+      const files = await clearUploads();
+      console.assert(result.count === files.length);
+      res.status(200).json(files);
+    } else {
+      res.status(405).json({ error: 'Method Not Allowed' });
+    }
   } catch (e) {
     res.status(500).json({ error: e });
   }

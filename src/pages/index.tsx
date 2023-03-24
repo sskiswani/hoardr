@@ -1,16 +1,15 @@
-import { Button, Text } from '@mantine/core';
+import { Button, Container, Text } from '@mantine/core';
 import type { Upload } from '@prisma/client';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
 import { UploadItem } from '~/components/UploadItem';
 import { Uploader } from '~/components/Uploader';
-import styles from '~/styles/Home.module.css';
 import logger from '~/util/logger';
 
 export default function Home() {
-  const mutatator = useSWRMutation('/api/uploads', key => fetch(key, { method: 'DELETE' }));
+  const mutatator = useSWRMutation('/api/file', key => fetch(key, { method: 'DELETE' }));
 
-  const uploads = useSWR<Upload[]>('/api/uploads');
+  const uploads = useSWR<Upload[]>('/api/file');
   const data = uploads.data;
   const count = data?.length ?? 0;
 
@@ -21,11 +20,11 @@ export default function Home() {
   };
 
   return (
-    <main className={styles.main}>
+    <main>
       <Button onClick={() => void onDelete()}>Delete</Button>
-      <div className={styles.description}>
+      <Container size="xs">
         <Uploader />
-      </div>
+      </Container>
       <Text>Got data {count}</Text>
       {data?.map(item => (
         <UploadItem key={item.id} upload={item} />

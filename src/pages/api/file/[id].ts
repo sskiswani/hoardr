@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const abspath = getUploadPath(upload.path);
     const result = await readFile(abspath);
-    const contentType = mime.getType(abspath) ?? `image/${path.extname(abspath).slice(1)}`;
+    const contentType = upload.mime ?? mime.getType(abspath) ?? `image/${path.extname(abspath).slice(1)}`;
     return res.setHeader('Content-Type', contentType).status(200).send(result);
   } catch (error: unknown) {
     console.error(error);
