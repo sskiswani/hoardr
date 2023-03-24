@@ -1,6 +1,9 @@
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
   root: true,
+  parserOptions: {
+    project: './tsconfig.eslint.json'
+  },
   plugins: ['prettier'],
   reportUnusedDisableDirectives: true,
   extends: [
@@ -21,9 +24,6 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts?(x)'],
-      parserOptions: {
-        project: './tsconfig.eslint.json'
-      },
       rules: {
         '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
         '@typescript-eslint/await-thenable': 'off',
@@ -52,7 +52,8 @@ module.exports = {
     {
       files: ['**/*.d.ts'],
       rules: {
-        '@typescript-eslint/no-empty-interface': 'off'
+        '@typescript-eslint/no-empty-interface': 'off',
+        '@typescript-eslint/no-unused-vars': 'off'
       }
     }
   ]

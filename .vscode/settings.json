@@ -1,4 +1,7 @@
 {
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
   "[typescript][typescriptreact]": {
     "editor.codeActionsOnSave": {
       "source.eslint.fixAll": true,
