@@ -46,7 +46,8 @@ module.exports = {
         '@typescript-eslint/prefer-nullish-coalescing': 'error',
         '@typescript-eslint/prefer-optional-chain': 'error',
         '@typescript-eslint/restrict-template-expressions': ['error', { allowAny: true, allowBoolean: true }],
-        '@typescript-eslint/sort-type-union-intersection-members': 'warn'
+        '@typescript-eslint/sort-type-union-intersection-members': 'warn',
+        'react/jsx-sort-props': ['warn', { shorthandFirst: true, ignoreCase: true, callbacksLast: true }]
       }
     },
     {

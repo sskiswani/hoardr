@@ -7,5 +7,5 @@ interface UploadItemProps extends Omit<ImageProps, 'src'> {
 }
 
 export function UploadItem({ upload: { id, name }, ...props }: UploadItemProps) {
-  return <Image width={80} fit="contain" src={`/api/file/${id}`} alt={name} caption={name} {...props} />;
+  return <Image alt={name} fit="contain" src={`/api/file/${id}`} width={80} {...props} />;
 }

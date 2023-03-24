@@ -2,7 +2,7 @@ import { Button, Container, Text } from '@mantine/core';
 import type { Upload } from '@prisma/client';
 import useSWR from 'swr';
 import useSWRMutation from 'swr/mutation';
-import { UploadItem } from '~/components/UploadItem';
+import { ImageGrid } from '~/components/ImageGrid';
 import { Uploader } from '~/components/Uploader';
 import logger from '~/util/logger';
 
@@ -26,9 +26,9 @@ export default function Home() {
         <Uploader />
       </Container>
       <Text>Got data {count}</Text>
-      {data?.map(item => (
-        <UploadItem key={item.id} upload={item} />
-      ))}
+      <Container>
+        <ImageGrid uploads={data ?? []} />
+      </Container>
       <pre>{JSON.stringify(data ?? [], null, 2)}</pre>
     </main>
   );

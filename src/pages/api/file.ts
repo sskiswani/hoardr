@@ -75,13 +75,32 @@ async function POST(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+async function GET(req: NextApiRequest, res: NextApiResponse) {
+  logger.info('hm?', req.query);
+  const { cursor, max } = req.query as Record<'cursor' | 'max', string>;
+
+  // return all
+  if (!max && !cursor) {
+    const uploads = await prisma.upload.findMany();
+    res.status(200).json(uploads);
+    return;
+  }
+
+  const maxResults = Number.parseInt(max);
+  const uploads = await prisma.upload.findMany({
+    take: maxResults,
+    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
+    orderBy: { uploaded: 'desc' }
+  });
+  res.status(200).json(uploads);
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     if (req.method === 'POST') {
       await POST(req, res);
     } else if (req.method === 'GET') {
-      const uploads = await prisma.upload.findMany();
-      res.status(200).json(uploads);
+      await GET(req, res);
     } else if (req.method === 'DELETE') {
       const result = await prisma.upload.deleteMany();
       const files = await clearUploads();

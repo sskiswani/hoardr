@@ -21,7 +21,7 @@ function DropzoneContent() {
         <IconPhotoUp size={32} />
       </Dropzone.Idle>
       <Box>
-        <Text size="sm" color="dimmed" inline>
+        <Text inline color="dimmed" size="sm">
           <Dropzone.Accept>Begin upload</Dropzone.Accept>
           <Dropzone.Reject>Unrecognized file type.</Dropzone.Reject>
           <Dropzone.Idle>Drag images here or click to select them.</Dropzone.Idle>
