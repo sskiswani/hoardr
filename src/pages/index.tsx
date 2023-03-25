@@ -9,13 +9,15 @@ import { Uploader } from '~/components/Uploader';
 import { useInvalidateCache } from '~/util/invalidate';
 
 export default function Home() {
-  const invalidate = useInvalidateCache(key => key === '/api/count' || (key as string).includes('filter'));
   const [filter, setFilter] = useState<string>();
   const uploads = useSWR<Upload[]>(filter ? `/api/file?filter=${filter}` : '/api/file');
   const data = uploads.data;
+  const invalidate = useInvalidateCache(key => key === '/api/count' || (key as string).includes('filter'));
 
-  const mutatator = useSWRMutation('/api/file', (key, { arg: data }: { arg?: string[] }) =>
-    axios.delete(key, data ? { data } : undefined)
+  const mutatator = useSWRMutation(
+    '/api/file',
+    (key, { arg: data }: { arg?: string[] }) => axios.delete(key, data ? { data } : undefined),
+    { revalidate: true }
   );
 
   const onDelete = async (ids?: string[]) => {
