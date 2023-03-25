@@ -1,6 +1,7 @@
 import { Center, Checkbox, Stack, Text, UnstyledButton, createStyles, rem } from '@mantine/core';
 import { useUncontrolled } from '@mantine/hooks';
 import type { Upload } from '@prisma/client';
+import type { OverrideProps } from '~/util/types';
 import { UploadItem } from './UploadItem';
 
 const useStyles = createStyles((theme, { checked }: { checked: boolean }) => ({
@@ -35,7 +36,8 @@ interface BaseProps {
   upload: Upload;
 }
 
-type SelectableImageProps = BaseProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof BaseProps>;
+// type SelectableImageProps = BaseProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof BaseProps>;
+type SelectableImageProps = OverrideProps<BaseProps, React.ComponentPropsWithoutRef<'button'>>;
 
 export function SelectableImage({ checked, defaultChecked, onChange, upload, className, ...others }: SelectableImageProps) {
   const [value, handleChange] = useUncontrolled({
@@ -49,7 +51,7 @@ export function SelectableImage({ checked, defaultChecked, onChange, upload, cla
 
   return (
     <UnstyledButton {...others} className={cx(classes.button, className)} miw="sm" onClick={() => handleChange(!value)}>
-      <Checkbox checked={value} className={classes.checkbox} mr="sm" tabIndex={-1} />
+      <Checkbox checked={value} className={classes.checkbox} mr="sm" tabIndex={-1} onChange={() => void 0} />
       <Stack align="center" w="100%">
         <Center>
           <UploadItem sx={{ pointerEvents: 'none' }} upload={upload} />

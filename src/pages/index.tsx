@@ -26,9 +26,7 @@ export default function Home() {
         <Uploader />
       </Container>
       <Text>Got data {count}</Text>
-      <Container>
-        <ImageGrid uploads={data ?? []} />
-      </Container>
+      <ImageGrid uploads={data ?? []} />
       <pre>{JSON.stringify(data ?? [], null, 2)}</pre>
     </main>
   );
