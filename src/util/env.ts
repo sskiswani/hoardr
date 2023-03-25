@@ -11,8 +11,12 @@ export function getUploadPath(uploadName: string) {
   return path.join(uploadDir, fname);
 }
 
-export async function clearUploads() {
-  const files = await glob(`${staticDir}/*`);
+function deleteFiles(deleteIds: string[]) {
+  return glob(`${staticDir}/{${deleteIds.join(',')}}*`, { nodir: true });
+}
+
+export async function clearUploads(deleteIds?: string[]) {
+  const files = await (deleteIds != null ? deleteFiles(deleteIds) : glob(`${staticDir}/*`));
   for (const file of files) {
     await rm(file);
     logger.info('deleted ', file);

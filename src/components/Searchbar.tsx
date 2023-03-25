@@ -20,14 +20,7 @@ export function Searchbar(props: SearchbarProps) {
       placeholder="Search..."
       radius="xl"
       rightSection={
-        <ActionIcon
-          color={theme.primaryColor}
-          disabled={!props.value}
-          radius="xl"
-          ref={actionRef}
-          size={32}
-          variant="filled"
-          onClick={props.onSubmit}>
+        <ActionIcon color={theme.primaryColor} radius="xl" ref={actionRef} size={32} variant="filled" onClick={props.onSubmit}>
           <IconArrowRight size="1.1rem" stroke={1.5} />
         </ActionIcon>
       }

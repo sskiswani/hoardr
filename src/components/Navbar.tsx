@@ -12,7 +12,7 @@ export function Navbar() {
   const { classes } = useStyles();
 
   return (
-    <Header height={60} mb={120}>
+    <Header height={60} mb="md">
       <Group h="100%" px="md">
         <Center>
           <Button color="pink" component={Link} href="/" size="md" variant="subtle">
