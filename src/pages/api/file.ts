@@ -9,7 +9,9 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
 
   if (filter) {
     const query = `%${filter}%`;
-    const uploads = await prisma.$queryRaw<Upload[]>(Prisma.sql`SELECT * FROM "Upload" WHERE "name" LIKE ${query};`);
+    const uploads = await prisma.$queryRaw<Upload[]>(
+      Prisma.sql`SELECT * FROM "Upload" WHERE "name" LIKE ${query} COLLATE NOCASE;`
+    );
     res.status(200).json(uploads);
     return;
   }

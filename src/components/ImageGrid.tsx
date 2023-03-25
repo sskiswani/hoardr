@@ -1,8 +1,8 @@
 import { Button, Container, Divider, Group, Paper, SimpleGrid } from '@mantine/core';
-import { useListState } from '@mantine/hooks';
+import { useDebouncedValue, useListState } from '@mantine/hooks';
 import type { Upload } from '@prisma/client';
 import { IconDeselect, IconSelectAll, IconTrash } from '@tabler/icons-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Searchbar } from './Searchbar';
 import { SelectableImage } from './SelectableImage';
 
@@ -23,10 +23,23 @@ interface ToolbarProps {
 
 function Toolbar({ onSearch, ...props }: ToolbarProps) {
   const [search, setSearch] = useState('');
+  const [debounced] = useDebouncedValue(search, 200);
+
+  useEffect(() => {
+    if (debounced) {
+      onSearch(debounced);
+    }
+  }, [debounced, onSearch]);
 
   return (
     <Group grow align="center" p="sm" position="apart">
-      <Searchbar value={search} onChange={ev => setSearch(ev.currentTarget.value)} onSubmit={() => onSearch(search)} />
+      <Searchbar
+        value={search}
+        onChange={ev => {
+          setSearch(ev.currentTarget.value);
+        }}
+        onSubmit={() => onSearch(search)}
+      />
       <Group position="right">
         <Button.Group>
           <Button leftIcon={<IconSelectAll />} variant="subtle" onClick={props.onSelectAll}>
