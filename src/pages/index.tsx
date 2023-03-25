@@ -10,7 +10,7 @@ import { useInvalidateCache } from '~/util/invalidate';
 import logger from '~/util/logger';
 
 export default function Home() {
-  const invalidate = useInvalidateCache();
+  const invalidate = useInvalidateCache(key => key === '/api/count');
   const [filter, setFilter] = useState<string>();
   const uploads = useSWR<Upload[]>(filter ? `/api/file?filter=${filter}` : '/api/file');
   const data = uploads.data;

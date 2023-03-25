@@ -8,7 +8,7 @@ import { SelectableImage } from './SelectableImage';
 
 interface ImageGridProps {
   uploads: Upload[];
-  onDelete?: (ids?: string[]) => void;
+  onDelete: (ids?: string[]) => void;
   onSearch: (value: string) => void;
 }
 
@@ -53,15 +53,24 @@ function Toolbar({ onSearch, ...props }: ToolbarProps) {
 export function ImageGrid({ uploads, onSearch, onDelete }: ImageGridProps) {
   const [selected, handlers] = useListState<string>([]);
 
+  const deselect = () => handlers.setState([]);
+
   return (
     <Container>
       <Paper withBorder m="sm">
         <Toolbar
           selectCount={selected.length}
-          onDelete={() => onDelete?.(selected.length > 0 ? selected : uploads.map(x => x.id))}
+          onDelete={() => {
+            if (selected.length > 0) {
+              onDelete(selected);
+              deselect();
+            } else {
+              onDelete(uploads.map(x => x.id));
+            }
+          }}
           onSearch={onSearch}
           onSelectAll={() => handlers.setState(uploads.map(x => x.id))}
-          onSelectNone={() => handlers.setState([])}
+          onSelectNone={deselect}
         />
         <Divider />
         <SimpleGrid
