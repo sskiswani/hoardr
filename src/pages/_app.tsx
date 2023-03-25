@@ -14,7 +14,7 @@ export default function App(props: AppProps) {
     <>
       <Head>
         <title>Hoardr</title>
-        <link href="/favicon.svg" rel="shortcut icon" />
+        <link href="/favicon.ico" rel="shortcut icon" />
         <meta content="minimum-scale=1, initial-scale=1, width=device-width" name="viewport" />
       </Head>
       <SWRConfig value={{ fetcher }}>

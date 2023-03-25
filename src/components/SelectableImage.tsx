@@ -52,11 +52,11 @@ export function SelectableImage({ checked, defaultChecked, onChange, upload, cla
   return (
     <UnstyledButton {...others} className={cx(classes.button, className)} miw="sm" onClick={() => handleChange(!value)}>
       <Checkbox checked={value} className={classes.checkbox} mr="sm" tabIndex={-1} onChange={() => void 0} />
-      <Stack align="center" w="100%">
+      <Stack align="center" h="100%" justify="center" w="100%">
         <Center>
           <UploadItem sx={{ pointerEvents: 'none' }} upload={upload} />
         </Center>
-        <Text truncate fw={500} maw="100%" mb={7} sx={{ lineHeight: 1 }} ta="center">
+        <Text truncate fw={500} maw="100%" mb={7} ta="center">
           {upload.name}
         </Text>
       </Stack>

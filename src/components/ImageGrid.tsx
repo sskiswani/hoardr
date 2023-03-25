@@ -9,35 +9,60 @@ import { SelectableImage } from './SelectableImage';
 interface ImageGridProps {
   uploads: Upload[];
   onDelete?: (ids?: string[]) => void;
-  onSearch?: (value: string) => void;
+  onSearch: (value: string) => void;
+}
+
+interface ToolbarProps {
+  onSelectAll: () => void;
+  onSelectNone: () => void;
+  onDelete: () => void;
+  onSearch: (value: string) => void;
+  selectCount?: number;
+}
+
+function Toolbar({ onSearch, ...props }: ToolbarProps) {
+  const [search, setSearch] = useState('');
+
+  return (
+    <Group grow align="center" p="sm" position="apart">
+      <Searchbar value={search} onChange={ev => setSearch(ev.currentTarget.value)} onSubmit={() => onSearch(search)} />
+      <Group position="right">
+        <Button.Group>
+          <Button leftIcon={<IconSelectAll />} variant="subtle" onClick={props.onSelectAll}>
+            All
+          </Button>
+          <Button color="gray" leftIcon={<IconDeselect />} variant="subtle" onClick={props.onSelectNone}>
+            None
+          </Button>
+        </Button.Group>
+        <Button
+          color="red.5"
+          leftIcon={<IconTrash />}
+          onClick={() => {
+            props.onDelete();
+            setSearch('');
+            onSearch('');
+          }}>
+          Delete {`${props.selectCount ? `selected` : 'all'}`}
+        </Button>
+      </Group>
+    </Group>
+  );
 }
 
 export function ImageGrid({ uploads, onSearch, onDelete }: ImageGridProps) {
   const [selected, handlers] = useListState<string>([]);
-  const [search, setSearch] = useState('');
 
   return (
     <Container>
       <Paper withBorder m="sm">
-        <Group grow align="center" p="sm" position="apart">
-          <Searchbar value={search} onChange={ev => setSearch(ev.currentTarget.value)} onSubmit={() => onSearch?.(search)} />
-          <Group position="right">
-            <Button.Group>
-              <Button leftIcon={<IconSelectAll />} variant="subtle" onClick={() => handlers.setState(uploads.map(x => x.id))}>
-                All
-              </Button>
-              <Button color="gray" leftIcon={<IconDeselect />} variant="subtle" onClick={() => handlers.setState([])}>
-                None
-              </Button>
-            </Button.Group>
-            <Button
-              color="red.5"
-              leftIcon={<IconTrash />}
-              onClick={() => onDelete?.(selected.length > 0 ? selected : uploads.map(x => x.id))}>
-              Delete {`${selected.length ? `selected` : 'all'}`}
-            </Button>
-          </Group>
-        </Group>
+        <Toolbar
+          selectCount={selected.length}
+          onDelete={() => onDelete?.(selected.length > 0 ? selected : uploads.map(x => x.id))}
+          onSearch={onSearch}
+          onSelectAll={() => handlers.setState(uploads.map(x => x.id))}
+          onSelectNone={() => handlers.setState([])}
+        />
         <Divider />
         <SimpleGrid
           breakpoints={[
