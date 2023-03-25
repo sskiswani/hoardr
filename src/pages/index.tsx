@@ -7,10 +7,9 @@ import useSWRMutation from 'swr/mutation';
 import { ImageGrid } from '~/components/ImageGrid';
 import { Uploader } from '~/components/Uploader';
 import { useInvalidateCache } from '~/util/invalidate';
-import logger from '~/util/logger';
 
 export default function Home() {
-  const invalidate = useInvalidateCache(key => key === '/api/count');
+  const invalidate = useInvalidateCache(key => key === '/api/count' || (key as string).includes('filter'));
   const [filter, setFilter] = useState<string>();
   const uploads = useSWR<Upload[]>(filter ? `/api/file?filter=${filter}` : '/api/file');
   const data = uploads.data;
@@ -20,9 +19,7 @@ export default function Home() {
   );
 
   const onDelete = async (ids?: string[]) => {
-    const result = await mutatator.trigger(ids);
-    const data = result?.data;
-    logger.info('deletion count', data);
+    await mutatator.trigger(ids);
     void invalidate();
   };
 

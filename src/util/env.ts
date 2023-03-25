@@ -12,7 +12,8 @@ export function getUploadPath(uploadName: string) {
 }
 
 function deleteFiles(deleteIds: string[]) {
-  return glob(`${staticDir}/{${deleteIds.join(',')}}*`, { nodir: true });
+  const searchVal = deleteIds.length > 1 ? `{${deleteIds.join(',')}}` : deleteIds[0];
+  return glob(`${staticDir}/${searchVal}*`, { nodir: true });
 }
 
 export async function clearUploads(deleteIds?: string[]) {

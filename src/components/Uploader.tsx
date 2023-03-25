@@ -42,13 +42,7 @@ function DropzoneContent() {
 async function onUpload(files: FileWithPath[]) {
   const formData = new FormData();
   files.forEach(file => formData.append('file', file));
-  const response = await fetch('/api/upload', {
-    method: 'POST',
-    body: formData
-  });
-
-  const body = (await response.json()) as { status: 'fail' | 'ok'; message: string };
-  console.log('got result', body);
+  return await fetch('/api/upload', { method: 'POST', body: formData });
 }
 
 export function Uploader(_props: UploaderProps) {

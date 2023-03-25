@@ -18,6 +18,7 @@ interface ToolbarProps {
   onDelete: () => void;
   onSearch: (value: string) => void;
   selectCount?: number;
+  resetOnDelete?: boolean;
 }
 
 function Toolbar({ onSearch, ...props }: ToolbarProps) {
@@ -40,8 +41,10 @@ function Toolbar({ onSearch, ...props }: ToolbarProps) {
           leftIcon={<IconTrash />}
           onClick={() => {
             props.onDelete();
-            setSearch('');
-            onSearch('');
+            if (props.resetOnDelete) {
+              setSearch('');
+              onSearch('');
+            }
           }}>
           Delete {`${props.selectCount ? `selected` : 'all'}`}
         </Button>
@@ -52,7 +55,6 @@ function Toolbar({ onSearch, ...props }: ToolbarProps) {
 
 export function ImageGrid({ uploads, onSearch, onDelete }: ImageGridProps) {
   const [selected, handlers] = useListState<string>([]);
-
   const deselect = () => handlers.setState([]);
 
   return (

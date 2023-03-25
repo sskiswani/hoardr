@@ -7,9 +7,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "run-s build start:next",
+    "start:next": "next start",
     "lint": "next lint",
-    "postinstall": "run-s db:generate",
+    "postinstall": "run-s db:generate db:push",
     "prisma": "prisma",
     "db": "run-s db:*",
     "db:generate": "prisma generate",

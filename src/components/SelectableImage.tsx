@@ -36,7 +36,6 @@ interface BaseProps {
   upload: Upload;
 }
 
-// type SelectableImageProps = BaseProps & Omit<React.ComponentPropsWithoutRef<'button'>, keyof BaseProps>;
 type SelectableImageProps = OverrideProps<BaseProps, React.ComponentPropsWithoutRef<'button'>>;
 
 export function SelectableImage({ checked, defaultChecked, onChange, upload, className, ...others }: SelectableImageProps) {

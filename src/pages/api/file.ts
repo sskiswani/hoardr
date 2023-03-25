@@ -44,8 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const deleteIds = Array.isArray(req.body) ? (req.body as string[]) : undefined;
       const result = await prisma.upload.deleteMany(deleteIds ? { where: { id: { in: req.body } } } : undefined);
       const files = await clearUploads(deleteIds);
-      console.assert(result.count === files.length);
-      res.status(200).json(files);
+      console.assert(result.count === files.length, `result: ${result.count} deleted: ${files.length}`);
+      res.status(200).json({ files, result });
     } else {
       res.status(405).json({ error: 'Method Not Allowed' });
     }
