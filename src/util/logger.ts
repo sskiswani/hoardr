@@ -4,7 +4,7 @@ const colors = {
   error: '#E91E63'
 };
 
-const TAG = '📡:ssk';
+const TAG = '🐲:hoardr';
 
 function getStyle(color: string) {
   return [`%c[${TAG}]`, `color: #000; font-size: 13px; font-weight: bold; background:${color}`];

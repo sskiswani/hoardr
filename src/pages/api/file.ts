@@ -10,12 +10,6 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
   if (filter) {
     const query = `%${filter}%`;
     const uploads = await prisma.$queryRaw<Upload[]>(Prisma.sql`SELECT * FROM "Upload" WHERE "name" LIKE ${query};`);
-
-    // TODO: clean
-    // const uploads = await prisma.upload.findMany({
-    //   where: { id: { in: ids.map(row => row.id) } }
-    // });
-
     res.status(200).json(uploads);
     return;
   }
@@ -27,6 +21,7 @@ async function GET(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
+  // TODO: one day itll infinite scroll
   const maxResults = Number.parseInt(max);
   const uploads = await prisma.upload.findMany({
     take: maxResults,

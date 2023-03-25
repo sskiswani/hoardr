@@ -3,6 +3,7 @@ import type { FileWithPath } from '@mantine/dropzone';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { IconPhotoPlus, IconPhotoUp, IconPhotoX } from '@tabler/icons-react';
 import { useInvalidateCache } from '~/util/invalidate';
+import logger from '~/util/logger';
 
 interface UploaderProps {
   onSubmit?: (files: FileWithPath[]) => void;
@@ -54,19 +55,8 @@ export function Uploader(_props: UploaderProps) {
       onDrop={files => {
         void onUpload(files).then(() => invalidate());
       }}
-      onReject={files => console.log('rejected files', files)}>
+      onReject={files => logger.info('rejected files', files)}>
       <DropzoneContent />
     </Dropzone>
-  );
-}
-
-export function UploaderFullscreen() {
-  return (
-    <Dropzone.FullScreen
-      accept={IMAGE_MIME_TYPE}
-      onDrop={files => console.log('accepted files', files)}
-      onReject={files => console.log('rejected files', files)}>
-      <DropzoneContent />
-    </Dropzone.FullScreen>
   );
 }

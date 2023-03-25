@@ -25,20 +25,23 @@ export function Navbar() {
           </Button>
         </Center>
         <Text color="dimmed">
-          A hoard of{' '}
-          {count.data != null && (
-            <Text
-              color="pink.1"
-              display="inline"
-              fw={count.data < 50 ? 500 : 800}
-              opacity={0.8}
-              sx={theme => ({
-                textShadow: count.data < 100 ? 'unset' : `0 0 18px ${theme.colors.grape[5]}`
-              })}>
-              {count.data}
-            </Text>
-          )}{' '}
-          images
+          A hoard of
+          {count.data > 0 && (
+            <>
+              {' '}
+              <Text
+                color="pink.1"
+                display="inline"
+                fw={count.data < 50 ? 500 : 800}
+                opacity={0.8}
+                sx={theme => ({
+                  textShadow: count.data < 100 ? 'unset' : `0 0 18px ${theme.colors.grape[5]}`
+                })}>
+                {count.data}
+              </Text>
+            </>
+          )}
+          {' images'}
         </Text>
       </Group>
     </Header>
